@@ -1,24 +1,27 @@
 package com.generation.farmacia.model;
 
-import java.util.List;
+import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name="tb_categorias")
-public class Categoria {
+@Table(name="tb_produtos")
+public class Produto {
+
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +29,7 @@ public class Categoria {
 	
 	@Column(length=100)
 	@NotBlank(message="O Atributo Nome  e Obrigatorio")
-	@Size(min=10,max=100,message="o Nome  deve ser maior que 10")
+	@Size(min=5,max=100,message="o Nome  deve ser maior que 10")
 	private String nome;
 	
 	@Column(length=100)
@@ -34,25 +37,22 @@ public class Categoria {
 	@Size(min=10,max=1000,message="o Descricao deve ser maior que 10")
 	private String descricao;
 	
-	@Column(length=100)
-	@NotBlank(message="O Atributo Fornecedor e Obrigatorio")
-	@Size(min=10,max=1000,message="o Fornecedor deve ser maior que 10")
-	private String fornecedor ;
+	@Column(columnDefinition = "DECIMAL(5,2)")
+	@DecimalMax("10000.00") 
+	@DecimalMin("00.00") 
+	private double preco;
 	
 	@Column(length=100)
     private Integer estoque;
 	
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "categoria" , cascade = CascadeType.REMOVE)
-    @JsonIgnoreProperties("categoria")
-    private List<Produto> produto;
+	@NotNull(message = "O Atributo data de validade é Obrigatório!")
+	@Column(name = "dt_nascimento")
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	private LocalDate dt_vali;
 	
-	public List<Produto> getProduto() {
-		return produto;
-	}
-
-	public void setProduto(List<Produto> produto) {
-		this.produto = produto;
-	}
+	@ManyToOne
+    @JsonIgnoreProperties("produtos")
+    private Categoria categoria;
 
 	public Long getId() {
 		return id;
@@ -78,12 +78,12 @@ public class Categoria {
 		this.descricao = descricao;
 	}
 
-	public String getFornecedor() {
-		return fornecedor;
+	public double getPreco() {
+		return preco;
 	}
 
-	public void setFornecedor(String fornecedor) {
-		this.fornecedor = fornecedor;
+	public void setPreco(double preco) {
+		this.preco = preco;
 	}
 
 	public Integer getEstoque() {
@@ -94,4 +94,20 @@ public class Categoria {
 		this.estoque = estoque;
 	}
 
+	public LocalDate getDt_vali() {
+		return dt_vali;
+	}
+
+	public void setDt_vali(LocalDate dt_vali) {
+		this.dt_vali = dt_vali;
+	}
+
+	public Categoria getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(Categoria categoria) {
+		this.categoria = categoria;
+	}
+		
 }
