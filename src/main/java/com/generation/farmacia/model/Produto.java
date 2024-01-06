@@ -53,6 +53,21 @@ public class Produto {
 	@ManyToOne
     @JsonIgnoreProperties("produtos")
     private Categoria categoria;
+	
+	
+
+	public Produto(Long id,String nome,String descricao,double preco, Integer estoque,LocalDate dt_vali) {
+		this.id = id;
+		this.nome = nome;
+		this.descricao = descricao;
+		this.preco = preco;
+		this.estoque = estoque;
+		this.dt_vali = dt_vali;
+	}
+	
+	public Produto() {
+
+	}
 
 	public Long getId() {
 		return id;
